@@ -1,13 +1,13 @@
 %define name xmp
 %define version 2.2.0
-%define prerel pre5
+%define prerel pre6
 %define release %mkrel 0.%prerel.1
 
 Summary: Extended Module Player
 Name: %{name}
 Version: %{version}
 Release: %{release}
-Source: %{version}/%{name}-%{version}-%{prerel}.tar.bz2
+Source: http://helllabs.org/xmp/testing/%{name}-%{version}-%{prerel}.tar.gz
 URL: http://xmp.sourceforge.net/
 License: GPL
 Group: Sound
