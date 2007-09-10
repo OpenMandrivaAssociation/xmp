@@ -32,6 +32,7 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DEST_DIR=$RPM_BUILD_ROOT BIN_DIR=$RPM_BUILD_ROOT%{_bindir} MAN_DIR=$RPM_BUILD_ROOT%{_mandir}/man1
+rm -f %buildroot%{_mandir}/man1/xxmp.1*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -40,5 +41,5 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc README docs/README* docs/COPYING docs/CREDITS docs/ChangeLog
 %config(noreplace) %_sysconfdir/*
-%{_bindir}/*
-%{_mandir}/*/*
+%{_bindir}/xmp
+%{_mandir}/man1/xmp.1*
