@@ -3,7 +3,7 @@
 %define prerel pre6
 %define release %mkrel 0.%prerel.1
 
-Summary: Extended Module Player
+Summary: A multi-format module player
 Name: %{name}
 Version: %{version}
 Release: %{release}
@@ -15,10 +15,10 @@ BuildRequires: libalsa-devel
 BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
-xmp is a tracked music player that recognizes XM, MOD, NST, WOW, S3M, STM, 669,
-PTM, OKT, MTM, FAR, ALM, RAD, AMD and ALM modules. xmp can play modules using
-the OSS sequencer (for Gravis Ultrasound and AWE32) and software mixing (for
-/dev/dsp and file output).
+The Extended Module Player is a modplayer for Unix-like systems that plays
+over 70 mainstream and obscure module formats from Amiga, Atari, Acorn and
+PC, including Protracker (MOD), Scream Tracker 3 (S3M), Fast Tracker II (XM)
+and Impulse Tracker (IT) files.
 
 %prep
 rm -rf $RPM_BUILD_ROOT
