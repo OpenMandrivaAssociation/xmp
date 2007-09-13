@@ -1,6 +1,6 @@
 %define name xmp
 %define version 2.2.0
-%define prerel pre6
+%define prerel rc1
 %define release %mkrel 0.%prerel.1
 
 Summary: A multi-format module player
@@ -8,6 +8,7 @@ Name: %{name}
 Version: %{version}
 Release: %{release}
 Source: http://helllabs.org/xmp/testing/%{name}-%{version}-%{prerel}.tar.gz
+Patch0: %{name}-%{version}-destdir.patch
 URL: http://xmp.sourceforge.net/
 License: GPL
 Group: Sound
@@ -21,21 +22,22 @@ PC, including Protracker (MOD), Scream Tracker 3 (S3M), Fast Tracker II (XM)
 and Impulse Tracker (IT) files.
 
 %prep
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %setup -q -n %{name}-%{version}-%{prerel}
+%patch0 -p0 -b .destdir
 
 %build
-%configure2_5x --disable-xmms
+%configure2_5x
 make
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DEST_DIR=$RPM_BUILD_ROOT BIN_DIR=$RPM_BUILD_ROOT%{_bindir} MAN_DIR=$RPM_BUILD_ROOT%{_mandir}/man1
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
 rm -f %buildroot%{_mandir}/man1/xxmp.1*
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
