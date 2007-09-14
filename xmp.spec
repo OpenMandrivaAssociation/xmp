@@ -1,13 +1,12 @@
 %define name xmp
 %define version 2.2.0
-%define prerel rc2
-%define release %mkrel 0.%prerel.1
+%define release %mkrel 1
 
 Summary: A multi-format module player
 Name: %{name}
 Version: %{version}
 Release: %{release}
-Source: http://helllabs.org/xmp/testing/%{name}-%{version}-%{prerel}.tar.gz
+Source: %{name}-%{version}.tar.gz
 URL: http://xmp.sourceforge.net/
 License: GPL
 Group: Sound
@@ -23,7 +22,7 @@ Fast Tracker II (XM) and Impulse Tracker (IT) files.
 %prep
 rm -rf %{buildroot}
 
-%setup -q -n %{name}-%{version}-%{prerel}
+%setup -q -n %{name}-%{version}
 
 %build
 %configure2_5x
