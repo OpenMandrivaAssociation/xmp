@@ -1,12 +1,13 @@
 %define name xmp
 %define version 2.2.0
-%define release %mkrel 1
+%define release %mkrel 2
 
 Summary: A multi-format module player
 Name: %{name}
 Version: %{version}
 Release: %{release}
 Source: %{name}-%{version}.tar.gz
+Patch0: %{name}-2.2.0-dtt_load.patch
 URL: http://xmp.sourceforge.net/
 License: GPL
 Group: Sound
@@ -23,6 +24,7 @@ Fast Tracker II (XM) and Impulse Tracker (IT) files.
 rm -rf %{buildroot}
 
 %setup -q -n %{name}-%{version}
+%patch0 -p1
 
 %build
 %configure2_5x
