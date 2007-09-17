@@ -7,6 +7,7 @@ Name: %{name}
 Version: %{version}
 Release: %{release}
 Source: %{name}-%{version}.tar.gz
+Patch0: %{name}-2.2.1-dtt_load.patch
 URL: http://xmp.sourceforge.net/
 License: GPL
 Group: Sound
@@ -36,6 +37,7 @@ This package contains the xmp plugin for the Audacious media player.
 rm -rf %{buildroot}
 
 %setup -q -n %{name}-%{version}
+%patch0 -p1
 
 %build
 %configure2_5x --enable-audacious-plugin
