@@ -1,12 +1,13 @@
 %define name xmp
-%define version 2.3.2
-%define release %mkrel 1
+%define version 2.4.0
+%define prerel pre3
+%define release %mkrel 0.%prerel.1
 
 Summary: A multi-format module player
 Name: %{name}
 Version: %{version}
 Release: %{release}
-Source: %{name}-%{version}.tar.gz
+Source: %{name}-%{version}-%prerel.tar.gz
 URL: http://xmp.sourceforge.net/
 License: GPL
 Group: Sound
@@ -35,7 +36,7 @@ This package contains the xmp plugin for the Audacious media player.
 %prep
 rm -rf %{buildroot}
 
-%setup -q -n %{name}-%{version}
+%setup -q -n %{name}-%{version}-%prerel
 
 %build
 %configure2_5x --enable-audacious-plugin
