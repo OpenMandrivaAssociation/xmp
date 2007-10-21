@@ -1,6 +1,6 @@
 %define name xmp
 %define version 2.4.0
-%define prerel pre4
+%define prerel pre5
 %define release %mkrel 0.%prerel.1
 
 Summary: A multi-format module player
@@ -11,7 +11,8 @@ Source: %{name}-%{version}-%prerel.tar.gz
 URL: http://xmp.sourceforge.net/
 License: GPL
 Group: Sound
-BuildRequires: libalsa-devel, audacious-devel
+BuildRequires: libalsa-devel
+BuildRequires: audacious-devel
 BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
