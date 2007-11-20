@@ -1,18 +1,18 @@
 %define name xmp
-%define version 2.4.1
-%define release %mkrel 3
+%define version 2.5.0
+%define prerel pre4
+%define release %mkrel 0.%prerel.1
 
 Summary: A multi-format module player
 Name: %{name}
 Version: %{version}
 Release: %{release}
-Source: %{name}-%{version}.tar.gz
-Patch: xmp-2.4.1-ptdt_load.patch
-Patch1: xmp-2.4.1-s3m_skip.patch
+Source: %{name}-%{version}-%prerel.tar.gz
 URL: http://xmp.sourceforge.net/
 License: GPLv2+
 Group: Sound
 BuildRequires: libalsa-devel
+BuildRequires: pulseaudio-devel
 BuildRequires: audacious-devel
 BuildRequires: xmms-devel
 BuildRoot: %{_tmppath}/%{name}-buildroot
@@ -52,12 +52,10 @@ This package contains the xmp plugin for the XMMS media player.
 %prep
 rm -rf %{buildroot}
 
-%setup -q -n %{name}-%{version}
-%patch -p1
-%patch1 -p1
+%setup -q -n %{name}-%{version}-%prerel
 
 %build
-%configure2_5x --enable-audacious-plugin --enable-xmms-plugin
+%configure2_5x --enable-audacious-plugin --enable-xmms-plugin --enable-pulseaudio
 make
 
 %install
