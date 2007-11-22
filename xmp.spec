@@ -1,6 +1,6 @@
 %define name xmp
 %define version 2.5.0
-%define prerel pre4
+%define prerel pre5
 %define release %mkrel 0.%prerel.1
 
 Summary: A multi-format module player
