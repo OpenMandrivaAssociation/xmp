@@ -1,13 +1,12 @@
 %define name xmp
 %define version 2.5.0
-%define prerel pre5
-%define release %mkrel 0.%prerel.1
+%define release %mkrel 1
 
 Summary: A multi-format module player
 Name: %{name}
 Version: %{version}
 Release: %{release}
-Source: %{name}-%{version}-%prerel.tar.gz
+Source: %{name}-%{version}.tar.gz
 URL: http://xmp.sourceforge.net/
 License: GPLv2+
 Group: Sound
@@ -52,7 +51,7 @@ This package contains the xmp plugin for the XMMS media player.
 %prep
 rm -rf %{buildroot}
 
-%setup -q -n %{name}-%{version}-%prerel
+%setup -q
 
 %build
 %configure2_5x --enable-audacious-plugin --enable-xmms-plugin --enable-pulseaudio
