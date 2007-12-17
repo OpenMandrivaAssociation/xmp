@@ -14,7 +14,6 @@ BuildRequires: libalsa-devel
 BuildRequires: pulseaudio-devel
 BuildRequires: audacious-devel
 BuildRequires: xmms-devel
-BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
 The Extended Module Player is a modplayer for Unix-like systems that plays
