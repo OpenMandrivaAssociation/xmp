@@ -1,6 +1,6 @@
 %define name xmp
 %define version 2.5.1
-%define release %mkrel 1
+%define release %mkrel 2
 
 Summary: A multi-format module player
 Name: %{name}
@@ -49,8 +49,6 @@ Fast Tracker II (XM) and Impulse Tracker (IT) files.
 This package contains the xmp plugin for the XMMS media player.
 
 %prep
-rm -rf %{buildroot}
-
 %setup -q
 
 %build
