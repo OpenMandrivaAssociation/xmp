@@ -23,7 +23,7 @@ Apple IIgs  and PC, including Protracker (MOD), Scream Tracker 3 (S3M),
 Fast Tracker II (XM) and Impulse Tracker (IT) files.
 
 %package audacious
-Summary: xmp plugin for Audacious
+Summary: Xmp plugin for Audacious
 Group: Sound
 Requires: audacious
 
@@ -36,7 +36,7 @@ Fast Tracker II (XM) and Impulse Tracker (IT) files.
 This package contains the xmp plugin for the Audacious media player.
 
 %package xmms
-Summary: xmp plugin for XMMS
+Summary: Xmp plugin for XMMS
 Group: Sound
 Requires: xmms
 
