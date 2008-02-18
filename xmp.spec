@@ -1,6 +1,6 @@
 %define name xmp
 %define version 2.5.1
-%define release %mkrel 2
+%define release %mkrel 3
 
 Summary: A multi-format module player
 Name: %{name}
