@@ -1,6 +1,6 @@
 %define name xmp
 %define version 2.5.1
-%define release %mkrel 4
+%define release %mkrel 5
 
 Summary: A multi-format module player
 Name: %{name}
@@ -12,7 +12,7 @@ License: GPLv2+
 Group: Sound
 BuildRequires: libalsa-devel
 BuildRequires: pulseaudio-devel
-BuildRequires: audacious-devel
+#BuildRequires: audacious-devel
 BuildRequires: xmms-devel
 BuildRoot: %{_tmppath}/%{name}-buildroot
 
@@ -52,7 +52,8 @@ This package contains the xmp plugin for the XMMS media player.
 %setup -q
 
 %build
-%configure2_5x --enable-audacious-plugin --enable-xmms-plugin --enable-pulseaudio
+%configure2_5x --enable-xmms-plugin --enable-pulseaudio
+#--enable-audacious-plugin 
 make
 
 %install
@@ -70,10 +71,12 @@ rm -rf %{buildroot}
 %{_bindir}/xmp
 %{_mandir}/man1/xmp.1*
 
+%if 0
 %files audacious
 %defattr(-,root,root)
 %doc README docs/COPYING docs/ChangeLog docs/CREDITS
 %{_libdir}/audacious/Input/*
+%endif
 
 %files xmms
 %defattr(-,root,root)
