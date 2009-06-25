@@ -1,12 +1,13 @@
 %define name xmp
-%define version 2.5.1
-%define release %mkrel 5
+%define version 2.6.0
+%define release %mkrel 1
 
 Summary: A multi-format module player
 Name: %{name}
 Version: %{version}
 Release: %{release}
 Source: %{name}-%{version}.tar.gz
+Patch: xmp-2.6.0-fix_xmms_plugin.patch
 URL: http://xmp.sourceforge.net/
 License: GPLv2+
 Group: Sound
@@ -22,6 +23,7 @@ over 70 mainstream and obscure module formats from Amiga, Atari, Acorn,
 Apple IIgs  and PC, including Protracker (MOD), Scream Tracker 3 (S3M),
 Fast Tracker II (XM) and Impulse Tracker (IT) files.
 
+%if 0
 %package audacious
 Summary: Xmp plugin for Audacious
 Group: Sound
@@ -34,6 +36,7 @@ Apple IIgs  and PC, including Protracker (MOD), Scream Tracker 3 (S3M),
 Fast Tracker II (XM) and Impulse Tracker (IT) files.
 
 This package contains the xmp plugin for the Audacious media player.
+%endif
 
 %package xmms
 Summary: Xmp plugin for XMMS
@@ -50,6 +53,7 @@ This package contains the xmp plugin for the XMMS media player.
 
 %prep
 %setup -q
+%patch -p1
 
 %build
 %configure2_5x --enable-xmms-plugin --enable-pulseaudio
