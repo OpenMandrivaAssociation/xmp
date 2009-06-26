@@ -1,6 +1,6 @@
 %define name xmp
 %define version 2.6.0
-%define release %mkrel 1
+%define release %mkrel 2
 
 Summary: A multi-format module player
 Name: %{name}
@@ -13,7 +13,7 @@ License: GPLv2+
 Group: Sound
 BuildRequires: libalsa-devel
 BuildRequires: pulseaudio-devel
-#BuildRequires: audacious-devel
+BuildRequires: audacious-devel
 BuildRequires: xmms-devel
 BuildRoot: %{_tmppath}/%{name}-buildroot
 
@@ -23,7 +23,6 @@ over 70 mainstream and obscure module formats from Amiga, Atari, Acorn,
 Apple IIgs  and PC, including Protracker (MOD), Scream Tracker 3 (S3M),
 Fast Tracker II (XM) and Impulse Tracker (IT) files.
 
-%if 0
 %package audacious
 Summary: Xmp plugin for Audacious
 Group: Sound
@@ -36,7 +35,6 @@ Apple IIgs  and PC, including Protracker (MOD), Scream Tracker 3 (S3M),
 Fast Tracker II (XM) and Impulse Tracker (IT) files.
 
 This package contains the xmp plugin for the Audacious media player.
-%endif
 
 %package xmms
 Summary: Xmp plugin for XMMS
@@ -56,8 +54,7 @@ This package contains the xmp plugin for the XMMS media player.
 %patch -p1
 
 %build
-%configure2_5x --enable-xmms-plugin --enable-pulseaudio
-#--enable-audacious-plugin 
+%configure2_5x --enable-xmms-plugin --enable-pulseaudio --enable-audacious-plugin 
 make
 
 %install
@@ -75,12 +72,10 @@ rm -rf %{buildroot}
 %{_bindir}/xmp
 %{_mandir}/man1/xmp.1*
 
-%if 0
 %files audacious
 %defattr(-,root,root)
 %doc README docs/COPYING docs/ChangeLog docs/CREDITS
 %{_libdir}/audacious/Input/*
-%endif
 
 %files xmms
 %defattr(-,root,root)
