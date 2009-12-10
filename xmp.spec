@@ -1,17 +1,12 @@
 %define name xmp
 %define version 3.0.0
-%define prerel pre1
-%define release %mkrel 0.%prerel.1
+%define release %mkrel 1
 
 Summary: A multi-format module player
 Name: %{name}
 Version: %{version}
 Release: %{release}
-Source: %{name}-%{version}-%prerel.tar.gz
-Patch1: 0001-Remove-extra-quotes-from-version-ID.patch
-Patch2: 0002-Remove-timezone-from-date-with-only-month-and-year.patch
-Patch3: 0003-Fix-XMMS-plugin-build.patch
-Patch4: 0004-Documentation-updates.patch
+Source: %{name}-%{version}.tar.gz
 URL: http://xmp.sourceforge.net/
 License: GPLv2+
 Group: Sound
@@ -54,8 +49,7 @@ Fast Tracker II (XM) and Impulse Tracker (IT) files.
 This package contains the xmp plugin for the XMMS media player.
 
 %prep
-%setup -q -n %name-%version-%prerel
-%apply_patches
+%setup -q -n %name-%version
 
 %build
 %configure2_5x --enable-pulseaudio --enable-audacious-plugin --enable-xmms-plugin 
