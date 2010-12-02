@@ -1,5 +1,5 @@
 %define name xmp
-%define version 3.2.0
+%define version 3.3.0
 %define release %mkrel 1
 %define build_audacious 0
 
