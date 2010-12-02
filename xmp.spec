@@ -1,7 +1,7 @@
 %define name xmp
 %define version 3.3.0
-%define release %mkrel 1
-%define build_audacious 0
+%define release %mkrel 2
+%define build_audacious 1
 
 Summary: A multi-format module player
 Name: %{name}
@@ -26,8 +26,8 @@ Fast Tracker II (XM) and Impulse Tracker (IT) files.
 %package audacious
 Summary: Xmp plugin for Audacious
 Group: Sound
-Requires: audacious
-BuildRequires: audacious-devel
+Requires: audacious >= 5:2.4.0
+BuildRequires: audacious-devel >= 5:2.4.0
 
 %description audacious
 The Extended Module Player is a modplayer for Unix-like systems that plays
