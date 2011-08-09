@@ -1,6 +1,6 @@
 %define name xmp
-%define version 3.3.0
-%define release %mkrel 2
+%define version 3.4.0
+%define release %mkrel 1
 %define build_audacious 1
 
 Summary: A multi-format module player
