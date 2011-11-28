@@ -8,6 +8,7 @@ Name: %{name}
 Version: %{version}
 Release: %{release}
 Source: %{name}-%{version}.tar.gz
+Patch0: xmp-3.4.0-audacious-3.1.patch
 URL: http://xmp.sourceforge.net/
 License: GPLv2+
 Group: Sound
@@ -53,6 +54,7 @@ This package contains the xmp plugin for the XMMS media player.
 
 %prep
 %setup -q -n %name-%version
+%apply_patches
 
 %build
 %configure2_5x --enable-pulseaudio  --enable-xmms-plugin \
