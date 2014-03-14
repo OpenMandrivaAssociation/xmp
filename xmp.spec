@@ -2,7 +2,7 @@ Name:		xmp
 Version:	4.0.7
 Release:	1
 Summary:	A multi-format module player
-Group:		Sound/Players
+Group:		Sound
 License:	GPLV2+
 URL:		http://xmp.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/xmp/xmp-%{version}.tar.gz
