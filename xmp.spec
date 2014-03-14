@@ -1,92 +1,38 @@
-%define name xmp
-%define version 3.4.1
-%define release %mkrel 4
-%define build_audacious 1
-
-Summary: A multi-format module player
-Name: %{name}
-Version: %{version}
-Release: %{release}
-Source: %{name}-%{version}.tar.gz
-Patch0: xmp-3.4.0-audacious-3.1.patch
-URL: http://xmp.sourceforge.net/
-License: GPLv2+
-Group: Sound
-BuildRequires: libalsa-devel
-BuildRequires: pulseaudio-devel
-BuildRequires: xmms-devel
-BuildRoot: %{_tmppath}/%{name}-buildroot
+Name:		xmp
+Version:	4.0.7
+Release:	1
+Summary:	A multi-format module player
+Group:		Sound/Players
+License:	GPLV2+
+URL:		http://xmp.sourceforge.net/
+Source0:	http://downloads.sourceforge.net/xmp/xmp-%{version}.tar.gz
+# use pulseaudio output by default
+Patch0:		xmp-4.0.6-pulse.patch
+BuildRequires:	pkgconfig(alsa)
+BuildRequires:	pkgconfig(libxmp)
+BuildRequires:	pkgconfig(libpulse)
 
 %description
-The Extended Module Player is a modplayer for Unix-like systems that plays
-over 70 mainstream and obscure module formats from Amiga, Atari, Acorn,
-Apple IIgs  and PC, including Protracker (MOD), Scream Tracker 3 (S3M),
-Fast Tracker II (XM) and Impulse Tracker (IT) files.
-
-%if %build_audacious
-%package audacious
-Summary: Xmp plugin for Audacious
-Group: Sound
-Requires: audacious >= 5:2.4.0
-BuildRequires: audacious-devel >= 5:2.4.0
-
-%description audacious
-The Extended Module Player is a modplayer for Unix-like systems that plays
-over 70 mainstream and obscure module formats from Amiga, Atari, Acorn,
-Apple IIgs  and PC, including Protracker (MOD), Scream Tracker 3 (S3M),
-Fast Tracker II (XM) and Impulse Tracker (IT) files.
-
-This package contains the xmp plugin for the Audacious media player.
-%endif
-
-%package xmms
-Summary: Xmp plugin for XMMS
-Group: Sound
-Requires: xmms
-
-%description xmms
-The Extended Module Player is a modplayer for Unix-like systems that plays
-over 70 mainstream and obscure module formats from Amiga, Atari, Acorn,
-Apple IIgs  and PC, including Protracker (MOD), Scream Tracker 3 (S3M),
-Fast Tracker II (XM) and Impulse Tracker (IT) files.
-
-This package contains the xmp plugin for the XMMS media player.
+This is the Extended Module Player, a portable module player that plays
+over 90 mainstream and obscure module formats, including Protracker MOD,
+Fasttracker II XM, Scream Tracker 3 S3M and Impulse Tracker IT files.
 
 %prep
-%setup -q -n %name-%version
+%setup -q
 %apply_patches
 
 %build
-%configure2_5x --enable-pulseaudio  --enable-xmms-plugin \
-%if %build_audacious
---enable-audacious-plugin
-%endif
-
+%configure2_5x \
+	--enable-pulseaudio
 %make
 
 %install
-rm -rf %{buildroot}
-mkdir -p %buildroot%_libdir/{audacious,xmms}/Input
 %makeinstall_std
 
-%clean
-rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root)
-%doc README docs/README* docs/COPYING docs/CREDITS docs/ChangeLog
-%config(noreplace) %_sysconfdir/*
+%doc Changelog CREDITS README
+%dir %{_sysconfdir}/xmp/
+%config(noreplace) %{_sysconfdir}/xmp/*.conf
 %{_bindir}/xmp
 %{_mandir}/man1/xmp.1*
 
-%if %build_audacious
-%files audacious
-%defattr(-,root,root)
-%doc README docs/COPYING docs/ChangeLog docs/CREDITS
-%{_libdir}/audacious/Input/*
-%endif
-
-%files xmms
-%defattr(-,root,root)
-%doc README docs/COPYING docs/ChangeLog docs/CREDITS
-%{_libdir}/xmms/Input/*
