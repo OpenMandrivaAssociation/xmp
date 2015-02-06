@@ -1,6 +1,6 @@
 Name:		xmp
 Version:	4.0.7
-Release:	1
+Release:	2
 Summary:	A multi-format module player
 Group:		Sound
 License:	GPLV2+
