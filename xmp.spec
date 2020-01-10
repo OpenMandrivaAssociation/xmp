@@ -19,7 +19,7 @@ Fasttracker II XM, Scream Tracker 3 S3M and Impulse Tracker IT files.
 
 %prep
 %setup -q
-%apply_patches
+%autopatch -p1
 
 %build
 %configure2_5x \
