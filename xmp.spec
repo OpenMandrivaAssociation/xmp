@@ -1,13 +1,12 @@
 Name:		xmp
-Version:	4.0.7
-Release:	2
+Version:	4.2.0
+Release:	1
 Summary:	A multi-format module player
 Group:		Sound
 License:	GPLV2+
 URL:		http://xmp.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/xmp/xmp-%{version}.tar.gz
-# use pulseaudio output by default
-Patch0:		xmp-4.0.6-pulse.patch
+
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(libxmp)
 BuildRequires:	pkgconfig(libpulse)
@@ -22,12 +21,12 @@ Fasttracker II XM, Scream Tracker 3 S3M and Impulse Tracker IT files.
 %autopatch -p1
 
 %build
-%configure2_5x \
+%configure \
 	--enable-pulseaudio
-%make
+%make_build
 
 %install
-%makeinstall_std
+%make_install
 
 %files
 %doc Changelog CREDITS README
