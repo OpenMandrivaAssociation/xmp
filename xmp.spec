@@ -4,7 +4,7 @@ Release:	1
 Summary:	A multi-format module player
 Group:		Sound
 License:	GPLV2+
-URL:		http://xmp.sourceforge.net/
+URL:		https://xmp.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/xmp/xmp-%{version}.tar.gz
 
 BuildRequires:	pkgconfig(alsa)
