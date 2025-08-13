@@ -1,0 +1,611 @@
+diff -rupN xmp-4.2.0.old/src/main.c xmp-4.2.0/src/main.c
+--- xmp-4.2.0.old/src/main.c	2025-08-13 14:49:06.846434683 +0200
++++ xmp-4.2.0/src/main.c	2025-08-13 14:52:48.887219879 +0200
+@@ -335,7 +335,7 @@ int main(int argc, char **argv)
+ 		report("Extended Module Player " VERSION "\n"
+ 			"Copyright (C) 1996-2016 Claudio Matsuoka and Hipolito Carraro Jr\n");
+ 
+-		report("Using %s\n", sound->description);
++		report("Using %s\n", sound->description());
+ 
+ 		report("Mixer set to %d Hz, %dbit, %s%s%s\n", opt.rate,
+ 		    opt.format & XMP_FORMAT_8BIT ? 8 : 16,
+diff -rupN xmp-4.2.0.old/src/options.c xmp-4.2.0/src/options.c
+--- xmp-4.2.0.old/src/options.c	2025-08-13 14:51:42.293417621 +0200
++++ xmp-4.2.0/src/options.c	2025-08-13 14:53:15.907328875 +0200
+@@ -59,13 +59,13 @@ static void usage(char *s, struct option
+ 
+ 	for (i = 0; sound_driver_list[i] != NULL; i++) {
+ 		sd = sound_driver_list[i];
+-		printf("    %s (%s)\n", sd->id, sd->description);
++		printf("    %s (%s)\n", sd->id, sd->description());
+ 	}
+ 
+ 	for (i = 0; sound_driver_list[i] != NULL; i++) {
+ 		sd = sound_driver_list[i];
+ 		if (sd->help)
+-			printf("\n%s options:\n", sd->description);
++			printf("\n%s options:\n", sd->description());
+ 		for (hlp = sd->help; hlp && *hlp; hlp += 2)
+ 			printf("   -D%-20.20s %s\n", hlp[0], hlp[1]);
+ 	}
+diff -rupN xmp-4.2.0.old/src/sound_ahi.c xmp-4.2.0/src/sound_ahi.c
+--- xmp-4.2.0.old/src/sound_ahi.c	2025-08-13 14:49:06.846932657 +0200
++++ xmp-4.2.0/src/sound_ahi.c	2025-08-13 14:56:14.201622705 +0200
+@@ -137,10 +137,14 @@ static void onpause(void) {
+ static void onresume(void) {
+ }
+ 
++static const char *description(void) {
++	return "Amiga AHI audio";
++}
++
+ const struct sound_driver sound_ahi = {
+     "ahi",
+-    "Amiga AHI audio",
+     NULL,
++	description,
+     init,
+     deinit,
+     play,
+@@ -148,4 +152,3 @@ const struct sound_driver sound_ahi = {
+     onpause,
+     onresume
+ };
+-
+diff -rupN xmp-4.2.0.old/src/sound_aiff.c xmp-4.2.0/src/sound_aiff.c
+--- xmp-4.2.0.old/src/sound_aiff.c	2025-08-13 14:49:06.847097870 +0200
++++ xmp-4.2.0/src/sound_aiff.c	2025-08-13 14:57:07.442589253 +0200
+@@ -152,10 +152,17 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "AIFF writer";
++}
++
++
++
+ const struct sound_driver sound_aiff = {
+ 	"aiff",
+-	"AIFF writer",
+ 	NULL,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_aix.c xmp-4.2.0/src/sound_aix.c
+--- xmp-4.2.0.old/src/sound_aix.c	2025-08-13 14:49:06.847246522 +0200
++++ xmp-4.2.0/src/sound_aix.c	2025-08-13 14:57:59.725153863 +0200
+@@ -118,6 +118,11 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "AIX PCM audio";
++}
++
+ static const char *const help[] = {
+ 	"gain=val", "Audio output gain (0 to 255)",
+ 	/* "buffer=val", "Audio buffer size (default is 32768)", */
+@@ -126,8 +131,8 @@ static const char *const help[] = {
+ 
+ const struct sound_driver sound_bsd = {
+ 	"aix",
+-	"AIX PCM audio",
+ 	help,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_alsa05.c xmp-4.2.0/src/sound_alsa05.c
+--- xmp-4.2.0.old/src/sound_alsa05.c	2025-08-13 14:49:06.847396356 +0200
++++ xmp-4.2.0/src/sound_alsa05.c	2025-08-13 14:59:46.150166734 +0200
+@@ -194,6 +194,11 @@ static void flush(void)
+ 	prepare_driver();
+ }
+ 
++static const char *description(void)
++{
++	return "ALSA 0.5 PCM audio";
++}
++
+ static const char *const help[] = {
+ 	"frag=num,size", "Set the number and size (bytes) of fragments",
+ 	"card <name>", "Select sound card to use",
+@@ -202,8 +207,8 @@ static const char *const help[] = {
+ 
+ const struct sound_driver sound_alsa05 = {
+ 	"alsa05",		/* driver ID */
+-	"ALSA 0.5 PCM audio",	/* driver description */
+ 	help,			/* help */
++	description,		/* driver description */
+ 	init,			/* init */
+ 	dshutdown,		/* shutdown */
+ 	dummy,			/* starttimer */
+diff -rupN xmp-4.2.0.old/src/sound_alsa.c xmp-4.2.0/src/sound_alsa.c
+--- xmp-4.2.0.old/src/sound_alsa.c	2025-08-13 14:49:06.847556289 +0200
++++ xmp-4.2.0/src/sound_alsa.c	2025-08-13 14:58:36.774762274 +0200
+@@ -109,6 +109,12 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "ALSA PCM audio";
++}
++
++
+ static const char *const help[] = {
+ 	"buffer=num", "Set the ALSA buffer time in milliseconds",
+ 	"period=num", "Set the ALSA period time in milliseconds",
+@@ -118,8 +124,8 @@ static const char *const help[] = {
+ 
+ const struct sound_driver sound_alsa = {
+ 	"alsa",
+-	"ALSA PCM audio",
+ 	help,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_beos.cpp xmp-4.2.0/src/sound_beos.cpp
+--- xmp-4.2.0.old/src/sound_beos.cpp	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_beos.cpp	2025-08-13 15:01:33.682216835 +0200
+@@ -35,6 +35,7 @@ static const char *const help[] = {
+ 	NULL
+ };
+ 
++static const char *description(void);
+ static int init(struct options *options);
+ static void deinit(void);
+ static void play(void *b, int i);
+@@ -42,10 +43,10 @@ static void flush(void);
+ static void onpause(void);
+ static void onresume(void);
+ 
+-struct sound_driver sound_beos = {
++const struct sound_driver sound_beos = {
+ 	"beos",
+-	"BeOS PCM audio",
+ 	help,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+@@ -205,3 +206,8 @@ static void onpause(void)
+ static void onresume(void)
+ {
+ }
++
++static const char *description(void)
++{
++	return "BeOS PCM audio",;
++}
+diff -rupN xmp-4.2.0.old/src/sound_bsd.c xmp-4.2.0/src/sound_bsd.c
+--- xmp-4.2.0.old/src/sound_bsd.c	2025-08-13 14:49:06.847744706 +0200
++++ xmp-4.2.0/src/sound_bsd.c	2025-08-13 15:02:20.039252275 +0200
+@@ -94,6 +94,11 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "BSD PCM audio";
++}
++
+ static const char *const help[] = {
+ 	"gain=val", "Audio output gain (0 to 255)",
+ 	"buffer=val", "Audio buffer size (default is 32768)",
+@@ -102,8 +107,8 @@ static const char *const help[] = {
+ 
+ const struct sound_driver sound_bsd = {
+ 	"bsd",
+-	"BSD PCM audio",
+ 	help,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_coreaudio.c xmp-4.2.0/src/sound_coreaudio.c
+--- xmp-4.2.0.old/src/sound_coreaudio.c	2025-08-13 14:49:06.848067038 +0200
++++ xmp-4.2.0/src/sound_coreaudio.c	2025-08-13 15:03:11.890216576 +0200
+@@ -267,10 +267,15 @@ static void onresume(void)
+ 	AudioOutputUnitStart(au);
+ }
+ 
++static const char *description(void)
++{
++	return "CoreAudio sound output";
++}
++
+ const struct sound_driver sound_coreaudio = {
+ 	"coreaudio",
+-	"CoreAudio sound output",
+ 	NULL,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_dart.c xmp-4.2.0/src/sound_dart.c
+--- xmp-4.2.0.old/src/sound_dart.c	2025-08-13 14:49:06.848157579 +0200
++++ xmp-4.2.0/src/sound_dart.c	2025-08-13 15:03:54.099270714 +0200
+@@ -212,6 +212,11 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "OS/2 Direct Audio Realtime";
++}
++
+ static const char *const help[] = {
+ 	"sharing={Y,N}", "Device Sharing    (default is N)",
+ 	"device=val", "OS/2 Audio Device (default is 0 auto-detect)",
+@@ -221,8 +226,8 @@ static const char *const help[] = {
+ 
+ const struct sound_driver sound_os2dart = {
+ 	"dart",
+-	"OS/2 Direct Audio Realtime",
+ 	help,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_file.c xmp-4.2.0/src/sound_file.c
+--- xmp-4.2.0.old/src/sound_file.c	2025-08-13 14:49:06.848246628 +0200
++++ xmp-4.2.0/src/sound_file.c	2025-08-13 15:04:35.309853386 +0200
+@@ -72,6 +72,11 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "Raw file writer";
++}
++
+ static const char * const help[] = {
+ 	"endian=big", "Force big-endian 16-bit samples",
+ 	"endian=little", "Force little-endian 16-bit samples",
+@@ -80,8 +85,8 @@ static const char * const help[] = {
+ 
+ const struct sound_driver sound_file = {
+ 	"file",
+-	"Raw file writer",
+ 	help,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound.h xmp-4.2.0/src/sound.h
+--- xmp-4.2.0.old/src/sound.h	2025-08-13 14:49:06.848335086 +0200
++++ xmp-4.2.0/src/sound.h	2025-08-13 14:54:24.595110853 +0200
+@@ -7,8 +7,8 @@
+ 
+ struct sound_driver {
+ 	const char *id;
+-	const char *description;
+ 	const char *const *help;
++	const char * (*description) (void);
+ 	int (*init)(struct options *);
+ 	void (*deinit)(void);
+ 	void (*play)(void *, int);
+diff -rupN xmp-4.2.0.old/src/sound_hpux.c xmp-4.2.0/src/sound_hpux.c
+--- xmp-4.2.0.old/src/sound_hpux.c	2025-08-13 14:49:06.848426519 +0200
++++ xmp-4.2.0/src/sound_hpux.c	2025-08-13 15:05:23.980953027 +0200
+@@ -139,6 +139,11 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "HP-UX PCM audio";
++}
++
+ static const char *const help[] = {
+ 	"gain=val", "Audio output gain (0 to 255)",
+ 	"port={s|h|l}", "Audio port (s[peaker], h[eadphones], l[ineout])",
+@@ -148,8 +153,8 @@ static const char *const help[] = {
+ 
+ const struct sound_driver sound_hpux = {
+ 	"hpux",
+-	"HP-UX PCM audio",
+ 	help,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_netbsd.c xmp-4.2.0/src/sound_netbsd.c
+--- xmp-4.2.0.old/src/sound_netbsd.c	2025-08-13 14:49:06.848522120 +0200
++++ xmp-4.2.0/src/sound_netbsd.c	2025-08-13 15:05:58.848005409 +0200
+@@ -124,6 +124,11 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "NetBSD PCM audio";
++}
++
+ static const char *const help[] = {
+ 	"gain=val", "Audio output gain (0 to 255)",
+ 	"buffer=val", "Audio buffer size (default is 32768)",
+@@ -132,8 +137,8 @@ static const char *const help[] = {
+ 
+ const struct sound_driver sound_netbsd = {
+ 	"netbsd",
+-	"NetBSD PCM audio",
+ 	help,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_null.c xmp-4.2.0/src/sound_null.c
+--- xmp-4.2.0.old/src/sound_null.c	2025-08-13 14:49:06.848612532 +0200
++++ xmp-4.2.0/src/sound_null.c	2025-08-13 15:06:46.954630167 +0200
+@@ -34,11 +34,15 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "null output";
++}
+ 
+ const struct sound_driver sound_null = {
+ 	"null",
+-	"null output",
+ 	NULL,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_oss.c xmp-4.2.0/src/sound_oss.c
+--- xmp-4.2.0.old/src/sound_oss.c	2025-08-13 14:49:06.848705358 +0200
++++ xmp-4.2.0/src/sound_oss.c	2025-08-13 15:10:00.327018877 +0200
+@@ -41,6 +41,9 @@ static int audio_fd;
+ static int fragnum, fragsize;
+ static int do_sync = 1;
+ 
++static const char *desc_default = "OSS PCM audio";
++static char descbuf[80] = {0};
++
+ static int to_fmt(int format)
+ {
+ 	int fmt;
+@@ -116,7 +119,6 @@ static int init(struct options *options)
+ 		"/dev/audio"	/* NetBSD and SunOS */
+ 	};
+ 	audio_buf_info info;
+-	static char buf[80];
+ 	int i;
+ 
+ 	fragnum = 16;		/* default number of fragments */
+@@ -141,10 +143,9 @@ static int init(struct options *options)
+ 	setaudio(&options->rate, &options->format);
+ 
+ 	if (ioctl(audio_fd, SNDCTL_DSP_GETOSPACE, &info) == 0) {
+-		snprintf(buf, 80, "%s [%d fragments of %d bytes]",
+-			 sound_oss.description, info.fragstotal,
++		snprintf(descbuf, sizeof(descbuf), "%s [%d fragments of %d bytes]",
++			 desc_default, info.fragstotal,
+ 			 info.fragsize);
+-		sound_oss.description = buf;
+ 	}
+ 
+ 	return 0;
+@@ -168,6 +169,7 @@ static void play(void *b, int i)
+ 
+ static void deinit(void)
+ {
++	descbuf[0] = 0;
+ 	ioctl(audio_fd, SNDCTL_DSP_RESET, NULL);
+ 	close(audio_fd);
+ }
+@@ -197,6 +199,13 @@ static void onresume(void)
+ #endif
+ }
+ 
++static const char *description(void)
++{
++	if (descbuf[0])
++		return descbuf;
++	return desc_default
++}
++
+ static const char *const help[] = {
+ 	"frag=num,size", "Set the number and size of fragments",
+ 	"dev=<device_name>", "Audio device to use (default /dev/dsp)",
+@@ -206,8 +215,8 @@ static const char *const help[] = {
+ 
+ const struct sound_driver sound_oss = {
+ 	"oss",
+-	"OSS PCM audio",
+ 	help,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_pulseaudio.c xmp-4.2.0/src/sound_pulseaudio.c
+--- xmp-4.2.0.old/src/sound_pulseaudio.c	2025-08-13 14:49:06.848789577 +0200
++++ xmp-4.2.0/src/sound_pulseaudio.c	2025-08-13 15:11:01.054369471 +0200
+@@ -82,10 +82,15 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "PulseAudio sound output";
++}
++
+ const struct sound_driver sound_pulseaudio = {
+ 	"pulseaudio",
+-	"PulseAudio sound output",
+ 	NULL,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_qnx.c xmp-4.2.0/src/sound_qnx.c
+--- xmp-4.2.0.old/src/sound_qnx.c	2025-08-13 14:49:06.848866353 +0200
++++ xmp-4.2.0/src/sound_qnx.c	2025-08-13 15:11:38.491185544 +0200
+@@ -105,6 +105,11 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "QNX PCM audio";
++}
++
+ static const char *const help[] = {
+ 	"dev=<device_name>", "Audio device name (default is /dev/dsp)",
+ 	"buffer=val", "Audio buffer size (default is 32768)",
+@@ -113,8 +118,8 @@ static const char *const help[] = {
+ 
+ const struct sound_driver sound_qnx = {
+ 	"QNX",
+-	"QNX PCM audio",
+ 	help,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_sb.c xmp-4.2.0/src/sound_sb.c
+--- xmp-4.2.0.old/src/sound_sb.c	2025-08-13 14:49:06.848943760 +0200
++++ xmp-4.2.0/src/sound_sb.c	2025-08-13 15:12:07.887871248 +0200
+@@ -150,10 +150,15 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "Sound Blaster for DOS";
++}
++
+ const struct sound_driver sound_sb = {
+ 	"sb",
+-	"Sound Blaster for DOS",
+ 	NULL,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_sgi.c xmp-4.2.0/src/sound_sgi.c
+--- xmp-4.2.0.old/src/sound_sgi.c	2025-08-13 14:49:06.849022539 +0200
++++ xmp-4.2.0/src/sound_sgi.c	2025-08-13 15:12:55.984599390 +0200
+@@ -167,6 +167,11 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "SGI IRIX PCM audio";
++}
++
+ static const char *const help[] = {
+ 	"buffer=val", "Audio buffer size",
+ 	NULL
+@@ -174,8 +179,8 @@ static const char *const help[] = {
+ 
+ const struct sound_driver sound_sgi = {
+ 	"sgi",
+-	"SGI IRIX PCM audio",
+ 	help,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_sndio.c xmp-4.2.0/src/sound_sndio.c
+--- xmp-4.2.0.old/src/sound_sndio.c	2025-08-13 14:49:06.849098102 +0200
++++ xmp-4.2.0/src/sound_sndio.c	2025-08-13 15:13:30.305541442 +0200
+@@ -100,10 +100,16 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "OpenBSD sndio";
++}
++
++
+ const struct sound_driver sound_sndio = {
+ 	"sndio",
+-	"OpenBSD sndio",
+ 	NULL,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_solaris.c xmp-4.2.0/src/sound_solaris.c
+--- xmp-4.2.0.old/src/sound_solaris.c	2025-08-13 14:49:06.849175769 +0200
++++ xmp-4.2.0/src/sound_solaris.c	2025-08-13 15:14:07.446358893 +0200
+@@ -170,6 +170,11 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "Solaris PCM audio";
++}
++
+ static const char *const help[] = {
+ 	"gain=val", "Audio output gain (0 to 255)",
+ 	"port={s|h|l}", "Audio port (s[peaker], h[eadphones], l[ineout])",
+@@ -179,8 +184,8 @@ static const char *const help[] = {
+ 
+ const struct sound_driver sound_solaris = {
+ 	"solaris",
+-	"Solaris PCM audio",
+ 	help,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_wav.c xmp-4.2.0/src/sound_wav.c
+--- xmp-4.2.0.old/src/sound_wav.c	2025-08-13 14:49:06.849259488 +0200
++++ xmp-4.2.0/src/sound_wav.c	2025-08-13 15:14:44.907102567 +0200
+@@ -138,10 +138,15 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "WAV writer";
++}
++
+ const struct sound_driver sound_wav = {
+ 	"wav",
+-	"WAV writer",
+ 	NULL,
++	description,
+ 	init,
+ 	deinit,
+ 	play,
+diff -rupN xmp-4.2.0.old/src/sound_win32.c xmp-4.2.0/src/sound_win32.c
+--- xmp-4.2.0.old/src/sound_win32.c	2025-08-13 14:49:06.849341504 +0200
++++ xmp-4.2.0/src/sound_win32.c	2025-08-13 15:15:35.679996952 +0200
+@@ -169,6 +169,11 @@ static void onresume(void)
+ {
+ }
+ 
++static const char *description(void)
++{
++	return "Windows WinMM sound output";
++}
++
+ static const char *const help[] = {
+ 	"buffers=val", "Number of buffers (default 10)",
+ 	NULL
+@@ -176,8 +181,8 @@ static const char *const help[] = {
+ 
+ const struct sound_driver sound_win32 = {
+ 	"win32",
+-	"Windows WinMM sound output",
+ 	help,
++	description,
+ 	init,
+ 	deinit,
+ 	play,

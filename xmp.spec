@@ -1,37 +1,44 @@
-Name:		xmp
-Version:	4.2.0
-Release:	1
 Summary:	A multi-format module player
-Group:		Sound
-License:	GPLV2+
-URL:		https://xmp.sourceforge.net/
-Source0:	http://downloads.sourceforge.net/xmp/xmp-%{version}.tar.gz
-
+Name:	xmp
+Version:	4.2.0
+Release:	2
+License:	GPLv2+
+Group:	Sound
+Url:	https://xmp.sourceforge.net/
+Source0:	https://downloads.sourceforge.net/xmp/%{name}-%{version}.tar.gz
+Patch0:	xmp-4.2.0-use-fixed-array-for-sound-drivers.patch
+Patch1:	xmp-4.2.0-drop-unused-linked-list-code.patch
+Patch2:	xmp-4.2.0-constify-struct-player_mode.patch
+Patch3:	xmp-4.2.0-use-specific-driver-function-for-description.patch
+Patch4:	xmp-4.2.0-update-COPYING-file.patch
 BuildRequires:	pkgconfig(alsa)
-BuildRequires:	pkgconfig(libxmp)
-BuildRequires:	pkgconfig(libpulse)
+BuildRequires:	pkgconfig(libxmp) >= 4.4.0
+BuildRequires:	pkgconfig(libpulse-simple)
+BuildRequires:	pkgconfig(sndio)
 
 %description
 This is the Extended Module Player, a portable module player that plays
 over 90 mainstream and obscure module formats, including Protracker MOD,
 Fasttracker II XM, Scream Tracker 3 S3M and Impulse Tracker IT files.
 
+%files
+%doc Changelog CREDITS README
+%dir %{_sysconfdir}/%{name}/
+%config(noreplace) %{_sysconfdir}/%{name}/*.conf
+%{_bindir}/%{name}
+%{_mandir}/man1/%{name}.1*
+
+#-----------------------------------------------------------------------------
+
 %prep
-%setup -q
-%autopatch -p1
+%autosetup -p1
+
 
 %build
-%configure \
-	--enable-pulseaudio
+%configure --enable-pulseaudio --disable-oss
 %make_build
+
 
 %install
 %make_install
-
-%files
-%doc Changelog CREDITS README
-%dir %{_sysconfdir}/xmp/
-%config(noreplace) %{_sysconfdir}/xmp/*.conf
-%{_bindir}/xmp
-%{_mandir}/man1/xmp.1*
 

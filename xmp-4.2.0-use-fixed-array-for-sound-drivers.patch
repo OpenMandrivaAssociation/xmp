@@ -1,0 +1,522 @@
+diff -rupN xmp-4.2.0.old/src/main.c xmp-4.2.0/src/main.c
+--- xmp-4.2.0.old/src/main.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/main.c	2025-08-13 13:26:06.437441551 +0200
+@@ -45,7 +45,7 @@
+ #include <windows.h>
+ #endif
+ 
+-static struct sound_driver *sound;
++static const struct sound_driver *sound;
+ static unsigned int foreground_in, foreground_out;
+ static int refresh_status;
+ 
+@@ -269,8 +269,6 @@ int main(int argc, char **argv)
+ 	srand(tv.tv_usec);
+ #endif
+ 
+-	init_sound_drivers();
+-
+ 	memset(&opt, 0, sizeof (struct options));
+ 	memset(&control, 0, sizeof (struct control));
+ 
+diff -rupN xmp-4.2.0.old/src/options.c xmp-4.2.0/src/options.c
+--- xmp-4.2.0.old/src/options.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/options.c	2025-08-13 13:28:13.423763861 +0200
+@@ -17,11 +17,8 @@
+ 
+ #include "common.h"
+ #include "sound.h"
+-#include "list.h"
+ #include "xmp_version.h"
+ 
+-extern struct list_head sound_driver_list;
+-
+ enum {
+ 	OPT_FX9BUG = 0x105,
+ 	OPT_PROBEONLY,
+@@ -51,22 +48,22 @@ struct player_mode pmode[] = {
+ 
+ static void usage(char *s, struct options *options)
+ {
+-	struct list_head *head;
+-	struct sound_driver *sd;
++	const struct sound_driver *sd;
+ 	struct player_mode *pm;
+ 	const char *const *hlp;
++	int i;
+ 
+ 	printf("Usage: %s [options] [modules]\n", s);
+ 
+ 	printf("\nAvailable drivers:\n");
+ 
+-	list_for_each(head, &sound_driver_list) {
+-		sd = list_entry(head, struct sound_driver, list);
++	for (i = 0; sound_driver_list[i] != NULL; i++) {
++		sd = sound_driver_list[i];
+ 		printf("    %s (%s)\n", sd->id, sd->description);
+ 	}
+ 
+-	list_for_each(head, &sound_driver_list) {
+-		sd = list_entry(head, struct sound_driver, list);
++	for (i = 0; sound_driver_list[i] != NULL; i++) {
++		sd = sound_driver_list[i];
+ 		if (sd->help)
+ 			printf("\n%s options:\n", sd->description);
+ 		for (hlp = sd->help; hlp && *hlp; hlp += 2)
+diff -rupN xmp-4.2.0.old/src/sound_ahi.c xmp-4.2.0/src/sound_ahi.c
+--- xmp-4.2.0.old/src/sound_ahi.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_ahi.c	2025-08-13 14:42:54.760850091 +0200
+@@ -137,7 +137,7 @@ static void onpause(void) {
+ static void onresume(void) {
+ }
+ 
+-struct sound_driver sound_ahi = {
++const struct sound_driver sound_ahi = {
+     "ahi",
+     "Amiga AHI audio",
+     NULL,
+diff -rupN xmp-4.2.0.old/src/sound_aiff.c xmp-4.2.0/src/sound_aiff.c
+--- xmp-4.2.0.old/src/sound_aiff.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_aiff.c	2025-08-13 14:43:03.701006055 +0200
+@@ -152,7 +152,7 @@ static void onresume(void)
+ {
+ }
+ 
+-struct sound_driver sound_aiff = {
++const struct sound_driver sound_aiff = {
+ 	"aiff",
+ 	"AIFF writer",
+ 	NULL,
+diff -rupN xmp-4.2.0.old/src/sound_aix.c xmp-4.2.0/src/sound_aix.c
+--- xmp-4.2.0.old/src/sound_aix.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_aix.c	2025-08-13 14:43:13.275050033 +0200
+@@ -124,7 +124,7 @@ static const char *const help[] = {
+ 	NULL
+ };
+ 
+-struct sound_driver sound_bsd = {
++const struct sound_driver sound_bsd = {
+ 	"aix",
+ 	"AIX PCM audio",
+ 	help,
+diff -rupN xmp-4.2.0.old/src/sound_alsa05.c xmp-4.2.0/src/sound_alsa05.c
+--- xmp-4.2.0.old/src/sound_alsa05.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_alsa05.c	2025-08-13 14:43:33.371581020 +0200
+@@ -200,7 +200,7 @@ static const char *const help[] = {
+ 	NULL
+ };
+ 
+-struct sound_driver sound_alsa05 = {
++const struct sound_driver sound_alsa05 = {
+ 	"alsa05",		/* driver ID */
+ 	"ALSA 0.5 PCM audio",	/* driver description */
+ 	help,			/* help */
+diff -rupN xmp-4.2.0.old/src/sound_alsa.c xmp-4.2.0/src/sound_alsa.c
+--- xmp-4.2.0.old/src/sound_alsa.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_alsa.c	2025-08-13 14:43:22.925902903 +0200
+@@ -116,7 +116,7 @@ static const char *const help[] = {
+ 	NULL
+ };
+ 
+-struct sound_driver sound_alsa = {
++const struct sound_driver sound_alsa = {
+ 	"alsa",
+ 	"ALSA PCM audio",
+ 	help,
+diff -rupN xmp-4.2.0.old/src/sound_bsd.c xmp-4.2.0/src/sound_bsd.c
+--- xmp-4.2.0.old/src/sound_bsd.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_bsd.c	2025-08-13 14:43:42.597773005 +0200
+@@ -100,7 +100,7 @@ static const char *const help[] = {
+ 	NULL
+ };
+ 
+-struct sound_driver sound_bsd = {
++const struct sound_driver sound_bsd = {
+ 	"bsd",
+ 	"BSD PCM audio",
+ 	help,
+diff -rupN xmp-4.2.0.old/src/sound.c xmp-4.2.0/src/sound.c
+--- xmp-4.2.0.old/src/sound.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound.c	2025-08-13 14:39:07.514788370 +0200
+@@ -10,84 +10,77 @@
+ #include <string.h>
+ #include "sound.h"
+ 
+-LIST_HEAD(sound_driver_list);
+-
+-static void register_sound_driver(struct sound_driver *sd)
+-{
+-	list_add_tail(&sd->list, &sound_driver_list);	
+-}
+-
+-void init_sound_drivers(void)
+-{
++const struct sound_driver *const sound_driver_list[] = {
+ #ifdef SOUND_AHI
+-	register_sound_driver(&sound_ahi);
++	&sound_ahi,
+ #endif
+ #ifdef SOUND_BEOS
+-	register_sound_driver(&sound_beos);
++	&sound_beos,
+ #endif
+ #ifdef SOUND_SNDIO
+-	register_sound_driver(&sound_sndio);
++	&sound_sndio,
+ #endif
+ #ifdef SOUND_NETBSD
+-	register_sound_driver(&sound_netbsd);
++	&sound_netbsd,
+ #endif
+ #ifdef SOUND_BSD
+-	register_sound_driver(&sound_bsd);
++	&sound_bsd,
+ #endif
+ #ifdef SOUND_SOLARIS
+-	register_sound_driver(&sound_solaris);
++	&sound_solaris,
+ #endif
+ #ifdef SOUND_SGI
+-	register_sound_driver(&sound_sgi);
++	&sound_sgi,
+ #endif
+ #ifdef SOUND_HPUX
+-	register_sound_driver(&sound_hpux);
++	&sound_hpux,
+ #endif
+ #ifdef SOUND_AIX
+-	register_sound_driver(&sound_aix);
++	&sound_aix,
+ #endif
+ #ifdef SOUND_COREAUDIO
+-	register_sound_driver(&sound_coreaudio);
++	&sound_coreaudio,
+ #endif
+ #ifdef SOUND_OS2DART
+-	register_sound_driver(&sound_os2dart);
++	&sound_os2dart,
+ #endif
+ #ifdef SOUND_WIN32
+-	register_sound_driver(&sound_win32);
++	&sound_win32,
+ #endif
+ #ifdef SOUND_PULSEAUDIO
+-	register_sound_driver(&sound_pulseaudio);
++	&sound_pulseaudio,
+ #endif
+ #ifdef SOUND_ALSA
+-	register_sound_driver(&sound_alsa);
++	&sound_alsa,
+ #endif
+ #ifdef SOUND_ALSA05
+-	register_sound_driver(&sound_alsa05);
++	&sound_alsa05,
+ #endif
+ #ifdef SOUND_OSS
+-	register_sound_driver(&sound_oss);
++	&sound_oss,
+ #endif
+ #ifdef SOUND_QNX
+-	register_sound_driver(&sound_qnx);
++	&sound_qnx,
+ #endif
+ #ifdef SOUND_SB
+-	register_sound_driver(&sound_sb);
++	&sound_sb,
+ #endif
+-	register_sound_driver(&sound_wav);
+-	register_sound_driver(&sound_aiff);
+-	register_sound_driver(&sound_file);
+-	register_sound_driver(&sound_null);
+-}
++	&sound_wav,
++	&sound_aiff,
++	&sound_file,
++	&sound_null,
++	NULL
++};
+ 
+-struct sound_driver *select_sound_driver(struct options *options)
++const struct sound_driver *select_sound_driver(struct options *options)
+ {
+-	struct list_head *head;
+-	struct sound_driver *sd;
++	const struct sound_driver *sd;
+ 	const char *pref = options->driver_id;
++	int i;
+ 
+ 	if (pref) {
+-		list_for_each(head, &sound_driver_list) {
+-			sd = list_entry(head, struct sound_driver, list);
++		for (i = 0; sound_driver_list[i] != NULL; i++) {
++			sd = sound_driver_list[i];
+ 			if (strcmp(sd->id, pref) == 0) {
+ 				if (sd->init(options) == 0) {
+ 					return sd;
+@@ -95,8 +88,8 @@ struct sound_driver *select_sound_driver
+ 			}
+ 		}
+ 	} else {
+-		list_for_each(head, &sound_driver_list) {
+-			sd = list_entry(head, struct sound_driver, list);
++		for (i = 0; sound_driver_list[i] != NULL; i++) {
++			sd = sound_driver_list[i];
+ 			/* Probing */
+ 			if (sd->init(options) == 0) {
+ 				/* found */
+diff -rupN xmp-4.2.0.old/src/sound_coreaudio.c xmp-4.2.0/src/sound_coreaudio.c
+--- xmp-4.2.0.old/src/sound_coreaudio.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_coreaudio.c	2025-08-13 14:43:52.122103137 +0200
+@@ -267,7 +267,7 @@ static void onresume(void)
+ 	AudioOutputUnitStart(au);
+ }
+ 
+-struct sound_driver sound_coreaudio = {
++const struct sound_driver sound_coreaudio = {
+ 	"coreaudio",
+ 	"CoreAudio sound output",
+ 	NULL,
+diff -rupN xmp-4.2.0.old/src/sound_dart.c xmp-4.2.0/src/sound_dart.c
+--- xmp-4.2.0.old/src/sound_dart.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_dart.c	2025-08-13 14:44:03.489226196 +0200
+@@ -219,7 +219,7 @@ static const char *const help[] = {
+ 	NULL
+ };
+ 
+-struct sound_driver sound_os2dart = {
++const struct sound_driver sound_os2dart = {
+ 	"dart",
+ 	"OS/2 Direct Audio Realtime",
+ 	help,
+diff -rupN xmp-4.2.0.old/src/sound_file.c xmp-4.2.0/src/sound_file.c
+--- xmp-4.2.0.old/src/sound_file.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_file.c	2025-08-13 14:44:17.156400634 +0200
+@@ -78,7 +78,7 @@ static const char * const help[] = {
+ 	NULL
+ };
+ 
+-struct sound_driver sound_file = {
++const struct sound_driver sound_file = {
+ 	"file",
+ 	"Raw file writer",
+ 	help,
+diff -rupN xmp-4.2.0.old/src/sound.h xmp-4.2.0/src/sound.h
+--- xmp-4.2.0.old/src/sound.h	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound.h	2025-08-13 14:42:10.249912642 +0200
+@@ -4,7 +4,6 @@
+ #include <stdio.h>
+ 
+ #include "common.h"
+-#include "list.h"
+ 
+ struct sound_driver {
+ 	const char *id;
+@@ -16,31 +15,32 @@ struct sound_driver {
+ 	void (*flush)(void);
+ 	void (*pause)(void);
+ 	void (*resume)(void);
+-	struct list_head list;
+ };
+ 
+-extern struct sound_driver sound_null;
+-extern struct sound_driver sound_wav;
+-extern struct sound_driver sound_aiff;
+-extern struct sound_driver sound_file;
+-extern struct sound_driver sound_qnx;
+-extern struct sound_driver sound_alsa05;
+-extern struct sound_driver sound_oss;
+-extern struct sound_driver sound_alsa;
+-extern struct sound_driver sound_os2dart;
+-extern struct sound_driver sound_win32;
+-extern struct sound_driver sound_pulseaudio;
+-extern struct sound_driver sound_coreaudio;
+-extern struct sound_driver sound_hpux;
+-extern struct sound_driver sound_sndio;
+-extern struct sound_driver sound_sgi;
+-extern struct sound_driver sound_solaris;
+-extern struct sound_driver sound_netbsd;
+-extern struct sound_driver sound_bsd;
+-extern struct sound_driver sound_beos;
+-extern struct sound_driver sound_aix;
+-extern struct sound_driver sound_ahi;
+-extern struct sound_driver sound_sb;
++extern const struct sound_driver sound_null;
++extern const struct sound_driver sound_wav;
++extern const struct sound_driver sound_aiff;
++extern const struct sound_driver sound_file;
++extern const struct sound_driver sound_qnx;
++extern const struct sound_driver sound_alsa05;
++extern const struct sound_driver sound_oss;
++extern const struct sound_driver sound_alsa;
++extern const struct sound_driver sound_os2dart;
++extern const struct sound_driver sound_win32;
++extern const struct sound_driver sound_pulseaudio;
++extern const struct sound_driver sound_coreaudio;
++extern const struct sound_driver sound_hpux;
++extern const struct sound_driver sound_sndio;
++extern const struct sound_driver sound_sgi;
++extern const struct sound_driver sound_solaris;
++extern const struct sound_driver sound_netbsd;
++extern const struct sound_driver sound_bsd;
++extern const struct sound_driver sound_beos;
++extern const struct sound_driver sound_aix;
++extern const struct sound_driver sound_ahi;
++extern const struct sound_driver sound_sb;
++
++extern const struct sound_driver *const sound_driver_list[];
+ 
+ #define parm_init(p) { char *token; for (; *(p); (p)++) { \
+ 	char s[80]; strncpy(s, *(p), 79); s[79] = 0; \
+@@ -64,7 +64,7 @@ static inline int is_big_endian(void) {
+ }
+ 
+ void init_sound_drivers(void);
+-struct sound_driver *select_sound_driver(struct options *);
++const struct sound_driver *select_sound_driver(struct options *);
+ void convert_endian(unsigned char *, int);
+ 
+ #endif
+diff -rupN xmp-4.2.0.old/src/sound_hpux.c xmp-4.2.0/src/sound_hpux.c
+--- xmp-4.2.0.old/src/sound_hpux.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_hpux.c	2025-08-13 14:44:27.619655630 +0200
+@@ -146,7 +146,7 @@ static const char *const help[] = {
+ 	NULL
+ };
+ 
+-struct sound_driver sound_hpux = {
++const struct sound_driver sound_hpux = {
+ 	"hpux",
+ 	"HP-UX PCM audio",
+ 	help,
+diff -rupN xmp-4.2.0.old/src/sound_netbsd.c xmp-4.2.0/src/sound_netbsd.c
+--- xmp-4.2.0.old/src/sound_netbsd.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_netbsd.c	2025-08-13 14:44:40.016971375 +0200
+@@ -130,7 +130,7 @@ static const char *const help[] = {
+ 	NULL
+ };
+ 
+-struct sound_driver sound_netbsd = {
++const struct sound_driver sound_netbsd = {
+ 	"netbsd",
+ 	"NetBSD PCM audio",
+ 	help,
+diff -rupN xmp-4.2.0.old/src/sound_null.c xmp-4.2.0/src/sound_null.c
+--- xmp-4.2.0.old/src/sound_null.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_null.c	2025-08-13 14:44:47.979089524 +0200
+@@ -35,7 +35,7 @@ static void onresume(void)
+ }
+ 
+ 
+-struct sound_driver sound_null = {
++const struct sound_driver sound_null = {
+ 	"null",
+ 	"null output",
+ 	NULL,
+diff -rupN xmp-4.2.0.old/src/sound_oss.c xmp-4.2.0/src/sound_oss.c
+--- xmp-4.2.0.old/src/sound_oss.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_oss.c	2025-08-13 14:44:56.897369387 +0200
+@@ -204,7 +204,7 @@ static const char *const help[] = {
+ 	NULL
+ };
+ 
+-struct sound_driver sound_oss = {
++const struct sound_driver sound_oss = {
+ 	"oss",
+ 	"OSS PCM audio",
+ 	help,
+diff -rupN xmp-4.2.0.old/src/sound_pulseaudio.c xmp-4.2.0/src/sound_pulseaudio.c
+--- xmp-4.2.0.old/src/sound_pulseaudio.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_pulseaudio.c	2025-08-13 14:45:04.703350908 +0200
+@@ -82,7 +82,7 @@ static void onresume(void)
+ {
+ }
+ 
+-struct sound_driver sound_pulseaudio = {
++const struct sound_driver sound_pulseaudio = {
+ 	"pulseaudio",
+ 	"PulseAudio sound output",
+ 	NULL,
+diff -rupN xmp-4.2.0.old/src/sound_qnx.c xmp-4.2.0/src/sound_qnx.c
+--- xmp-4.2.0.old/src/sound_qnx.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_qnx.c	2025-08-13 14:45:12.401567597 +0200
+@@ -111,7 +111,7 @@ static const char *const help[] = {
+ 	NULL
+ };
+ 
+-struct sound_driver sound_qnx = {
++const struct sound_driver sound_qnx = {
+ 	"QNX",
+ 	"QNX PCM audio",
+ 	help,
+diff -rupN xmp-4.2.0.old/src/sound_sb.c xmp-4.2.0/src/sound_sb.c
+--- xmp-4.2.0.old/src/sound_sb.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_sb.c	2025-08-13 14:45:21.829827163 +0200
+@@ -150,7 +150,7 @@ static void onresume(void)
+ {
+ }
+ 
+-struct sound_driver sound_sb = {
++const struct sound_driver sound_sb = {
+ 	"sb",
+ 	"Sound Blaster for DOS",
+ 	NULL,
+diff -rupN xmp-4.2.0.old/src/sound_sgi.c xmp-4.2.0/src/sound_sgi.c
+--- xmp-4.2.0.old/src/sound_sgi.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_sgi.c	2025-08-13 14:45:30.994069503 +0200
+@@ -172,7 +172,7 @@ static const char *const help[] = {
+ 	NULL
+ };
+ 
+-struct sound_driver sound_sgi = {
++const struct sound_driver sound_sgi = {
+ 	"sgi",
+ 	"SGI IRIX PCM audio",
+ 	help,
+diff -rupN xmp-4.2.0.old/src/sound_sndio.c xmp-4.2.0/src/sound_sndio.c
+--- xmp-4.2.0.old/src/sound_sndio.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_sndio.c	2025-08-13 14:45:40.362065971 +0200
+@@ -100,7 +100,7 @@ static void onresume(void)
+ {
+ }
+ 
+-struct sound_driver sound_sndio = {
++const struct sound_driver sound_sndio = {
+ 	"sndio",
+ 	"OpenBSD sndio",
+ 	NULL,
+diff -rupN xmp-4.2.0.old/src/sound_solaris.c xmp-4.2.0/src/sound_solaris.c
+--- xmp-4.2.0.old/src/sound_solaris.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_solaris.c	2025-08-13 14:45:53.110175230 +0200
+@@ -177,7 +177,7 @@ static const char *const help[] = {
+ 	NULL
+ };
+ 
+-struct sound_driver sound_solaris = {
++const struct sound_driver sound_solaris = {
+ 	"solaris",
+ 	"Solaris PCM audio",
+ 	help,
+diff -rupN xmp-4.2.0.old/src/sound_wav.c xmp-4.2.0/src/sound_wav.c
+--- xmp-4.2.0.old/src/sound_wav.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_wav.c	2025-08-13 14:46:00.888446419 +0200
+@@ -138,7 +138,7 @@ static void onresume(void)
+ {
+ }
+ 
+-struct sound_driver sound_wav = {
++const struct sound_driver sound_wav = {
+ 	"wav",
+ 	"WAV writer",
+ 	NULL,
+diff -rupN xmp-4.2.0.old/src/sound_win32.c xmp-4.2.0/src/sound_win32.c
+--- xmp-4.2.0.old/src/sound_win32.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/sound_win32.c	2025-08-13 14:46:08.679671174 +0200
+@@ -174,7 +174,7 @@ static const char *const help[] = {
+ 	NULL
+ };
+ 
+-struct sound_driver sound_win32 = {
++const struct sound_driver sound_win32 = {
+ 	"win32",
+ 	"Windows WinMM sound output",
+ 	help,

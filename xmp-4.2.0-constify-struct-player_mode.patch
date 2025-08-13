@@ -1,0 +1,54 @@
+diff -rupN xmp-4.2.0.old/src/common.h xmp-4.2.0/src/common.h
+--- xmp-4.2.0.old/src/common.h	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/common.h	2025-08-13 14:50:11.557747764 +0200
+@@ -78,7 +78,7 @@ struct control {
+ 	int mixer_type;		/* Mixer type (from player) */
+ };
+ 
+-extern struct player_mode pmode[];
++extern const struct player_mode pmode[];
+ 
+ void delay_ms(unsigned int);
+ #ifdef XMP_AMIGA
+diff -rupN xmp-4.2.0.old/src/info.c xmp-4.2.0/src/info.c
+--- xmp-4.2.0.old/src/info.c	2023-06-15 22:11:10.000000000 +0200
++++ xmp-4.2.0/src/info.c	2025-08-13 14:50:33.633440085 +0200
+@@ -52,7 +52,7 @@ void info_mod(const struct xmp_module_in
+ 	report("Module type  : %s", mi->mod->type);
+ 
+ 	if (mode != XMP_MODE_AUTO) {
+-		struct player_mode *pm;
++		const struct player_mode *pm;
+ 		for (pm = pmode; pm->name != NULL; pm++) {
+ 			if (pm->mode == mode) {
+ 				report(" [play as:%s]", pm->desc);
+diff -rupN xmp-4.2.0.old/src/options.c xmp-4.2.0/src/options.c
+--- xmp-4.2.0.old/src/options.c	2025-08-13 14:49:06.846747757 +0200
++++ xmp-4.2.0/src/options.c	2025-08-13 14:51:42.293417621 +0200
+@@ -31,7 +31,7 @@ enum {
+ 	OPT_NUMVOICES,
+ };
+ 
+-struct player_mode pmode[] = {
++const struct player_mode pmode[] = {
+ 	{ "auto",         "Autodetect",                XMP_MODE_AUTO },
+ 	{ "mod",          "Generic MOD player",        XMP_MODE_MOD },
+ 	{ "noisetracker", "Noisetracker",              XMP_MODE_NOISETRACKER },
+@@ -49,7 +49,7 @@ struct player_mode pmode[] = {
+ static void usage(char *s, struct options *options)
+ {
+ 	const struct sound_driver *sd;
+-	struct player_mode *pm;
++	const struct player_mode *pm;
+ 	const char *const *hlp;
+ 	int i;
+ 
+@@ -175,7 +175,7 @@ static char *token;
+ 
+ void get_options(int argc, char **argv, struct options *options)
+ {
+-	struct player_mode *pm;
++	const struct player_mode *pm;
+ 	int optidx = 0;
+ 	int o;
+ 	char const* driver_guess = NULL;
