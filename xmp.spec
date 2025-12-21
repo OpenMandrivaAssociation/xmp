@@ -11,6 +11,11 @@ Patch1:	xmp-4.2.0-drop-unused-linked-list-code.patch
 Patch2:	xmp-4.2.0-constify-struct-player_mode.patch
 Patch3:	xmp-4.2.0-use-specific-driver-function-for-description.patch
 Patch4:	xmp-4.2.0-update-COPYING-file.patch
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(libxmp) >= 4.4.0
 BuildRequires:	pkgconfig(libpulse-simple)
