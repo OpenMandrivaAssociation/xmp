@@ -1,16 +1,16 @@
 Summary:	A multi-format module player
 Name:	xmp
-Version:	4.2.0
-Release:	2
+Version:	4.3.1
+Release:	1
 License:	GPLv2+
 Group:	Sound
 Url:	https://xmp.sourceforge.net/
 Source0:	https://downloads.sourceforge.net/xmp/%{name}-%{version}.tar.gz
-Patch0:	xmp-4.2.0-use-fixed-array-for-sound-drivers.patch
-Patch1:	xmp-4.2.0-drop-unused-linked-list-code.patch
-Patch2:	xmp-4.2.0-constify-struct-player_mode.patch
-Patch3:	xmp-4.2.0-use-specific-driver-function-for-description.patch
-Patch4:	xmp-4.2.0-update-COPYING-file.patch
+# dropped (no longer applies): Patch0:	xmp-4.3.1-use-fixed-array-for-sound-drivers.patch
+# dropped (no longer applies): Patch1:	xmp-4.3.1-drop-unused-linked-list-code.patch
+# dropped (no longer applies): Patch2:	xmp-4.3.1-constify-struct-player_mode.patch
+# dropped (no longer applies): Patch3:	xmp-4.3.1-use-specific-driver-function-for-description.patch
+# dropped (no longer applies): Patch4:	xmp-4.3.1-update-COPYING-file.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool-base
